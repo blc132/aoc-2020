@@ -23,18 +23,31 @@ def validatePassport(passportData):
         byr = int(d["byr"])
         if not (byr >= 1920 and byr <= 2002):
             return 0
+
         iyr = int(d["iyr"])
         if not (iyr >= 2010 and iyr <= 2020):
             return 0
+
         eyr = int(d["eyr"])
         if not (eyr >= 2020 and eyr <= 2030):
             return 0
-        if not (("cm" in d["hgt"] and int(d["hgt"].replace("cm", "")) >= 150 and int(d["hgt"].replace("cm", "")) <= 193) or ("in" in d["hgt"] and int(d["hgt"].replace("in", "")) >= 59 and int(d["hgt"].replace("in", "")) <= 76)):
+
+        hgt = []
+        if "cm" in d["hgt"]:
+            hgt.append("cm")
+            hgt.append(int(d["hgt"].replace("cm", "")))
+        elif "in" in d["hgt"]:
+            hgt.append("in")
+            hgt.append(int(d["hgt"].replace("in", "")))
+        if not len(hgt) or not ((hgt[0] == "cm" and hgt[1] >= 150 and hgt[1] <= 193) or (hgt[0] == "in" and hgt[1] >= 59 and hgt[1] <= 76)):
             return 0
+
         if not regexHexColor.match(d["hcl"]):
             return 0
+
         if not any(color in d["ecl"] for color in eyeColors):
             return 0
+
         if not (len(d["pid"]) == 9 and d["pid"].isdigit()):
             return 0
 
