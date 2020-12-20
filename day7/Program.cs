@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace day7
 {
@@ -18,16 +20,17 @@ namespace day7
             var myBag = bags.First(x => x.Color == MyBagColor);
             var bagsWhereIsMyBag = new List<Bag>();
 
-            GetBagsReq(myBag, bagsWhereIsMyBag, bags);
+            GetBagsWhereIsMyBagReq(myBag, bagsWhereIsMyBag, bags);
         }
 
 
-        static void GetBagsReq(Bag bag, List<Bag> bagsToSave, List<Bag> allBags)
+        static void GetBagsWhereIsMyBagReq(Bag bag, List<Bag> bagsToSave, List<Bag> allBags)
         {
             foreach (var b in allBags)
             {
-                if(b.Content.Exists(x => x.Color == bag.Color) && b.Color != MyBagColor)
-                    GetBagsReq(b, bagsToSave, allBags);
+
+                if(b.Content2.ContainsKey(bag) && b.Color != MyBagColor)
+                    GetBagsWhereIsMyBagReq(b, bagsToSave, allBags);
             }
 
             if(!bagsToSave.Exists(x => x.Color == bag.Color) && bag.Color != MyBagColor)
@@ -48,8 +51,9 @@ namespace day7
 
                 //get bag content - everything to right from "bags contain"
                 var bagContent = line.Substring(index + BagsContain.Length + 1);
+
                 //remove numbers and dots
-                bagContent = new string(bagContent.Where(x => x != '.' && (x < '0' || x > '9')).ToArray());
+                bagContent = new string(bagContent.Where(x => x != '.').ToArray());
 
                 var bag = bags.FirstOrDefault(x => x.Color == bagColor);
 
@@ -66,6 +70,7 @@ namespace day7
                 }
 
                 var bagContentList = bagContent.Split(",");
+
                 foreach (var content in bagContentList)
                 {
                     string word;
@@ -79,9 +84,12 @@ namespace day7
                     {
                         word = " bags";
                     }
-                    string bagInsideBagColor = (bagIndex < 0)
+                    string bagInsideBagColorWithNumber = (bagIndex < 0)
                         ? content.Trim()
                         : content.Remove(bagIndex, word.Length).Trim();
+
+                    var bagInsideBagCount = int.Parse(bagInsideBagColorWithNumber[0].ToString());
+                    var bagInsideBagColor = bagInsideBagColorWithNumber.Substring(2);
 
                     var bagInsideBag = bags.FirstOrDefault(x => x.Color == bagInsideBagColor);
 
@@ -91,7 +99,7 @@ namespace day7
                         bags.Add(bagInsideBag);
                     }
 
-                    bag.Content.Add(bagInsideBag);
+                    bag.Content2.Add(bagInsideBag, bagInsideBagCount);
                 }
             }
 
