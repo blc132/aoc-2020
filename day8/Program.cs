@@ -9,7 +9,20 @@ namespace day8
             var lines = File.ReadAllLines("input.txt");
             var bootCode = new BootCode(lines);
 
-            bootCode.RunCode();
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                if (bootCode.Instructions[i].Type != INSTRUCTION_TYPE.ACC)
+                {
+                    bootCode.CleanExecutions();
+                    bootCode.SwapInstruction(i);
+                    bootCode.RunCode();
+                    bootCode.SwapInstruction(i);
+
+                    if (bootCode.Terminates)
+                        break;
+                }
+            }
 
             var acc = bootCode.Accumulator;
         }

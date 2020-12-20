@@ -5,6 +5,7 @@ namespace day8
     public class BootCode
     {
         public int Accumulator { get; set; }
+        public bool Terminates { get; set; }
         public List<Instruction> Instructions { get; set; }
 
         public BootCode(string[] lines)
@@ -13,6 +14,30 @@ namespace day8
             for (int i = 0; i < lines.Length; i++)
             {
                 Instructions.Add(new Instruction(lines[i], i + 1));
+            }
+        }
+
+        public void SwapInstruction(int index)
+        {
+            var instr = Instructions[index];
+
+            switch (instr.Type)
+            {
+                case INSTRUCTION_TYPE.JMP:
+                    instr.Type = INSTRUCTION_TYPE.NOP;
+                    break;
+                case INSTRUCTION_TYPE.NOP:
+                    instr.Type = INSTRUCTION_TYPE.JMP;
+                    break;
+            }
+        }
+
+        public void CleanExecutions()
+        {
+            Accumulator = 0;
+            foreach (var instruction in Instructions)
+            {
+                instruction.Executed = false;
             }
         }
 
@@ -34,6 +59,12 @@ namespace day8
                     case INSTRUCTION_TYPE.JMP:
                         i += instr.Value - 1;
                         break;
+                }
+
+                if (i == Instructions.Count - 1)
+                {
+                    Terminates = true;
+                    return;
                 }
             }
         }
