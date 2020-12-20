@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 
 namespace day7
 {
@@ -18,10 +17,26 @@ namespace day7
             var bags = GetBags(lines);
 
             var myBag = bags.First(x => x.Color == MyBagColor);
-            var bagsWhereIsMyBag = new List<Bag>();
 
-            GetBagsWhereIsMyBagReq(myBag, bagsWhereIsMyBag, bags);
+            //PART 1
+            // var bagsWhereIsMyBag = new List<Bag>();
+            // GetBagsWhereIsMyBagReq(myBag, bagsWhereIsMyBag, bags);
+
+            //PART 2
+            int bagsCount = CountBagsInside(myBag);
         }
+
+        static int CountBagsInside(Bag bag)
+        {
+            int counter = 0;
+            foreach (var (bagInside, amountOfBags) in bag.Content)
+            {
+                var countInside = CountBagsInside(bagInside);
+                counter += countInside * amountOfBags + amountOfBags;
+            }
+            return counter;
+        }
+
 
 
         static void GetBagsWhereIsMyBagReq(Bag bag, List<Bag> bagsToSave, List<Bag> allBags)
@@ -29,7 +44,7 @@ namespace day7
             foreach (var b in allBags)
             {
 
-                if(b.Content2.ContainsKey(bag) && b.Color != MyBagColor)
+                if(b.Content.ContainsKey(bag) && b.Color != MyBagColor)
                     GetBagsWhereIsMyBagReq(b, bagsToSave, allBags);
             }
 
@@ -99,7 +114,7 @@ namespace day7
                         bags.Add(bagInsideBag);
                     }
 
-                    bag.Content2.Add(bagInsideBag, bagInsideBagCount);
+                    bag.Content.Add(bagInsideBag, bagInsideBagCount);
                 }
             }
 
