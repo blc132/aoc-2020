@@ -11,7 +11,6 @@ namespace day11
             var waitingArea = new WaitingArea();
 
             waitingArea.SetSeats(lines);
-            waitingArea.FillAllSeats();
             waitingArea.SetAllAdjacentSeats();
 
             bool stateChanged = true;
