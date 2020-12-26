@@ -4,10 +4,76 @@
     {
         public int EastPosition { get; set; }
         public int NorthPosition { get; set; }
+
+        public int EastWayPointPosition { get; set; } = 10;
+        public int NorthWayPointPosition { get; set; } = 1;
+
         public DIRECTION Direction { get; set; }
         public int Degrees { get; set; }
 
-        public void Move(string command)
+        public void MovePart2(string command)
+        {
+            char type = command[0];
+            int value = int.Parse(command.Substring(1));
+            int tempEastPosition = EastWayPointPosition;
+            int tempNorthPosition = NorthWayPointPosition;
+
+            switch (type)
+            {
+                case 'N':
+                    NorthWayPointPosition += value;
+                    break;
+                case 'S':
+                    NorthWayPointPosition -= value;
+                    break;
+                case 'E':
+                    EastWayPointPosition += value;
+                    break;
+                case 'W':
+                    EastWayPointPosition -= value;
+                    break;
+                case 'R':
+                    switch (value)
+                    {
+                        case 90:
+                            EastWayPointPosition = tempNorthPosition;
+                            NorthWayPointPosition = -tempEastPosition;
+                            break;
+                        case 180:
+                            EastWayPointPosition = -tempEastPosition;
+                            NorthWayPointPosition = -tempNorthPosition;
+                            break;
+                        case 270:
+                            EastWayPointPosition = -tempNorthPosition;
+                            NorthWayPointPosition = tempEastPosition;
+                            break;
+                    }
+                    break;
+                case 'L':
+                    switch (value)
+                    {
+                        case 270:
+                            EastWayPointPosition = tempNorthPosition;
+                            NorthWayPointPosition = -tempEastPosition;
+                            break;
+                        case 180:
+                            EastWayPointPosition = -tempEastPosition;
+                            NorthWayPointPosition = -tempNorthPosition;
+                            break;
+                        case 90:
+                            EastWayPointPosition = -tempNorthPosition;
+                            NorthWayPointPosition = tempEastPosition;
+                            break;
+                    }
+                    break;
+                case 'F':
+                    EastPosition += EastWayPointPosition * value;
+                    NorthPosition += NorthWayPointPosition * value;
+                    break;
+            }
+        }
+
+        public void MovePart1(string command)
         {
             char type = command[0];
             int value = int.Parse(command.Substring(1));

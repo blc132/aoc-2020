@@ -13,7 +13,7 @@ namespace day12
 
             foreach (var command in lines)
             {
-                    ship.Move(command);
+                    ship.MovePart2(command);
             }
 
             Console.WriteLine(Math.Abs(ship.EastPosition) + Math.Abs(ship.NorthPosition));
